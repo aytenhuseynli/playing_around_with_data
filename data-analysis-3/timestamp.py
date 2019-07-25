@@ -8,8 +8,8 @@ from datetime import datetime
 from pandas.io.json import json_normalize
 from collections import OrderedDict
 
-json_data = pd.read_json('aca-microbit-321-go.json')
-file = json_data.to_csv('aca-microbit-321-go.csv')
+json_data = pd.read_json('<file_name>.json')
+file = json_data.to_csv('<file_name>.csv')
 
 def timestamp_diff(file):
     df = pd.read_csv(file, usecols = ['created_at','user_id', 'status', 'kind'])
