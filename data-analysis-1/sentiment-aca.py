@@ -48,3 +48,69 @@ columns = ['comments_day1_activities','comments_day1_info','comments_day2_progra
 process_files(aca_post_files, columns, 'aca-post-data')
 process_files(aca_pre_files, columns, 'aca-pre-data')
 
+df = pd.read_msgpack('aca-post-data.msg')
+
+columns_sent = ['question','comment','g-score','g-magnitude','nltk-score']
+
+# table1 = df.groupby('g-score')['comment'].\
+#         agg({'commentcount': pd.Series.nunique})
+
+# table1.plot.barh(align = 'center')
+
+plt.subplots_adjust(left=0.2)
+plt.margins(0.3)
+plt.ylabel('Sentiment Score')
+# plt.show()
+# plt.savefig('sentiment_comment.png')
+
+# df.groupby('g-score')['comment'].\
+    # agg({'commentcount': pd.Series.nunique,
+         # 'comment': lambda x: '|-|'.join(x)}, as_index = False, axis='columns')
+
+df = pd.read_csv('report1.csv')
+# f = lambda x: len(x["comment"].split("great")) -1
+# df["great"] = df.apply(f, axis=1)
+
+# print(df)
+# print(df.loc[df['g-score'] <= 0])
+# print(df.loc[df['g-score'] >= 0])
+# df = df.set_index(['g-score'])
+# print(df.loc[df.index.isin(['0.9'])])
+
+# file = open('report1.csv', encoding="utf8")
+file = open('challenge-evaluation-2019.results.2019-03-28.csv', encoding="utf8")
+reader = file.read()
+# Stopwords
+stopwords = set(line.strip() for line in open('stopwords.txt'))
+# stopwords = stopwords.union(set(['mr','mrs','one','two','said']))
+# Instantiate a dictionary, and for every word in the file,
+# Add to the dictionary if it doesn't exist. If it does, increase the count.
+wordcount = defaultdict(int)
+# To eliminate duplicates, remember to split by punctuation, and use case demiliters.
+for word in reader.lower().split():
+    word = word.replace(".","")
+    word = word.replace(",","")
+    word = word.replace(":","")
+    word = word.replace("\"","")
+    word = word.replace("!","")
+    word = word.replace("â€œ","")
+    word = word.replace("â€˜","")
+    word = word.replace("*","")
+    word = word.replace("|-|","")
+    if word not in stopwords:
+        wordcount[word] += 1
+print('finished replacing stuff')
+# Print most common word
+n_print = 50
+word_counter = Counter(wordcount)
+print('starting word count')
+for word, count in word_counter.most_common(n_print):
+    print(word, ": ", count)
+print('finished word count')
+# Close the file
+file.close()
+# Create a data frame of the most common words
+# Draw a bar chart
+lst = word_counter.most_common(n_print)
+df = pd.DataFrame(lst, columns = ['Word', 'Count'])
+df.plot.bar(x='Word',y='Count')
